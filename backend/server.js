@@ -1,5 +1,7 @@
 const express = require('express')
 const multer = require('multer')
+const cors = require('cors');
+app.use(cors());
 const path = require('path');
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -13,21 +15,29 @@ const storage = multer.diskStorage({
   });
   
   const upload = multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-    fileFilter: (req, file, cb) => {
-      if (file.mimetype.startsWith('image/')) {
-        cb(null, true);
-      } else {
-        cb(new Error('Only image files are allowed!'), false);
-      }
-    }
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: function (req, file, cb) {
+      cb(null, true);
+    },
   });
+
+
 app.get('/',(req,res)=>{
     res.send('hii')
 })
-app.post('/add',upload.single('img'),(req,res)=>{
+app.post('/upload', upload.single('img'), (req, res) => {
 
-})
+    const {username,email,address,mobile} = req.body
+    console.log(username,email,address,mobile)
+    if (!req.img) {
+        return res.status(400).send('No file uploaded');
+    }
+
+  return  res.json({
+        message: 'File uploaded successfully!',
+        file: req.file
+    });
+});
 
 app.listen(PORT,()=>console.log(`server started at http://localhost:${PORT}`))
