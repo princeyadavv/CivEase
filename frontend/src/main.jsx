@@ -1,31 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import "./index.css";
-// import { AuthProvider } from "./context/AuthContext.jsx";
 import {
   Route,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-
 import Layout from "./Layout.jsx";
-import Home from "./components/Home/Home.jsx";
+// import Home from "./components/Home/Explore.jsx";
 import Form from "./components/Form/Fom.jsx";
 import Form2 from "./components/Form/Form2.jsx";
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<Layout />}>
-      <Route path="" element={<Home />} />
-      <Route path="form" element={<Form />} />
-      <Route path="form2" element={<Form2 />} />
-    </Route>
-  )
-);
+import LandingPage from "./components/Home/LandingPage.jsx";
+import "./index.css";
+import Explore from "./components/Home/Explore.jsx";
+import Login from "./components/Login/Login.jsx";
+import SignUp from "./components/SignUp/SignUp.jsx";
+
+const App = () => {
+  const [showHeaderFooter, setShowHeaderFooter] = useState(false);
+
+  const handleGetStarted = () => {
+    setShowHeaderFooter(true);
+  };
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<Layout showHeaderFooter={showHeaderFooter} />}>
+        <Route
+          path=""
+          element={<LandingPage onGetStarted={handleGetStarted} />}
+        />
+        <Route path="explore" element={<Explore />} />
+        <Route path="form" element={<Form />} />
+        <Route path="form2" element={<Form2 />} />
+        <Route path="login" element={<Login />} />
+        <Route path="signup" element={<SignUp />} />
+      </Route>
+    )
+  );
+
+  return <RouterProvider router={router} />;
+};
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <App />
   </React.StrictMode>
 );

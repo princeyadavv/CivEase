@@ -1,14 +1,14 @@
 import React from "react";
-import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer.jsx";
 import { Outlet } from "react-router-dom";
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
 
-function Layout() {
+function Layout({ showHeaderFooter }) {
   return (
     <>
-      <Header />
+      {showHeaderFooter && <Header />}
       <Outlet />
-      <Footer />
+      {showHeaderFooter && <Footer />}
     </>
   );
 }
