@@ -1,7 +1,6 @@
 const issues = require('../models/issue');
 const mongoose = require('mongoose')
 const users = require('../models/user');
-const issues = require('../models/issue');
 
 async function handleUpload(req, res) {
     const {  description, type, long, lat,location } = req.body;
