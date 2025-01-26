@@ -4,6 +4,10 @@ location:{
     type:String,
     required:"true"
 },
+coordinates:{
+    type:String,
+    required:"true"
+},
 img:{
     type:String,
     required:true
@@ -14,7 +18,7 @@ description:{
     required:true
 },
 status:{
-    type:Number,
+    type:String,
     default: "UNDER REVIEW"
 },
 support:[
@@ -25,7 +29,7 @@ support:[
 ],
 comments: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'comment',
     },
   ]

@@ -34,7 +34,12 @@ const userSchema = new Schema(
     ],
     role: {
       type: String,
+      default:"USER"
     },
+    authorityOf:{
+      type: String,
+      default: "NONE"
+    }
   },
   { timestamps: true }
 );

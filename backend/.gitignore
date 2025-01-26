@@ -18,6 +18,8 @@ dist/
 build/
 out/
 
+upload/*
+
 # Dependency directories
 bower_components/
 
