@@ -1,4 +1,5 @@
-# Civease: Public Safety & Feedback Platform 🛡️📢
+
+# CivEase: Public Safety & Feedback Platform 🛡️📢
 
 ## Overview
 Civease is a unified platform designed to enhance public safety and streamline city maintenance by enabling citizens to report incidents and local issues in real time. The platform fosters collaboration between citizens and authorities to create safer and smarter communities.
@@ -65,21 +66,29 @@ Civease bridges this gap by offering:
 ## How to Get Started ▶️
 1. Clone the repository:
    ```bash
-   git clone https://github.com/username/civease.git
+   git clone https://github.com/princeyadavv/CivEase
    ```
+
 2. Navigate to the project directory:
    ```bash
    cd civease
    ```
-3. Install dependencies:
+
+3. Setup the backend:
    ```bash
+   cd backend
    npm install
-   ```
-4. Start the development server:
-   ```bash
    npm start
    ```
-5. Open your browser and visit `http://localhost:3000`.
+
+4. Setup the frontend:
+   ```bash
+   cd ../frontend
+   npm install
+   npm start
+   ```
+
+5. Open your browser and visit `http://localhost:3000` for the frontend interface. The backend server will run at `http://localhost:5000`.
 
 ---
 
@@ -109,11 +118,10 @@ We welcome contributions to improve Civease. Please follow these steps:
 
 ---
 
-## License 📢
+<!-- ## License 📢
 Civease is licensed under the [MIT License](LICENSE).
 
----
+--- -->
 
 ## Contact ✉️
 For queries or suggestions, please reach out to us at **support@civease.com**.
-
