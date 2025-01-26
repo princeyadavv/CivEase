@@ -142,7 +142,7 @@ const Report = () => {
             Select Report Type
           </label>
           <select
-            name="seva"
+            name="type"
             value={formData.type}
             onChange={handleChange}
             className="w-full border border-gray-300 p-3 rounded-lg"
@@ -239,7 +239,7 @@ const Report = () => {
               name="address"
               placeholder="Location"
               readOnly
-              value={`${formData.longitude},${formData.longitude}`}
+              value={`${formData.lat},${formData.long}`}
               className="p-3 border border-gray-300 rounded-lg w-full mr-4"
             />
             <button

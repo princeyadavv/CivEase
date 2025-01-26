@@ -20,6 +20,27 @@ export default function Login() {
   const handleLogin = async (data) => {
     setError("");
     console.log("Login data submitted:", data);
+    try {
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        const token = result.token
+        console.log(token)
+       localStorage.setItem("bankai",token)
+       window.location.href = '/explore'
+      } else {
+        setMessage(result?.message || "File upload failed");
+        
+      }
+    } catch (error) {
+      setMessage("Error: " + error.message);
+    }
   };
 
   return (

@@ -20,7 +20,7 @@ export default function SignUp() {
     setMessage(""); // Reset any previous message
     console.log(data);
     try {
-      const response = await fetch("http://localhost:5000/upload", {
+      const response = await fetch("http://localhost:5000/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -29,9 +29,11 @@ export default function SignUp() {
       const result = await response.json();
 
       if (response.ok) {
-        setMessage("File uploaded successfully!");
+        setMessage("Account created successfully!");
+        window.location.href = '/login'
       } else {
-        setMessage(result?.error || "File upload failed");
+        setMessage(result?.message || "File upload failed");
+        
       }
     } catch (error) {
       setMessage("Error: " + error.message);
