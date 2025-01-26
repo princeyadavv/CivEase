@@ -46,7 +46,7 @@ const LandingPage = ({ onGetStarted }) => {
       <section className="text-white py-20 px-4 md:px-6 lg:px-8 h-screen flex items-center bg-gradient-to-b from-blue-400 to-pink-200">
         <div className="container mx-auto text-center">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-6">
-            Empowering Citizens. Building Better Communities.
+            Connecting Citizens and Authorities for Safer, Smarter Communities
           </h1>
           <p className="text-lg md:text-xl mb-8 text-gray-500">
             Report issues, provide feedback, and track resolutions—all in one

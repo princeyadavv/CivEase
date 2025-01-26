@@ -4,69 +4,67 @@ import { gsap } from "gsap";
 import { useToken } from "../context/TokenContent"; // Import hooks
 
 const Report = () => {
-  // const [address, setAddress] = useState("");
-  const { token } = useToken(); // Get the raw token and save function
-  
+  const { token } = useToken();
+  const navigate = useNavigate();
   const [message, setMessage] = useState("");
+  const [descriptionRows, setDescriptionRows] = useState(2);
+  const [locationError, setLocationError] = useState("");
+  const [showToast, setShowToast] = useState(false);
+
   const [formData, setFormData] = useState({
     type: "",
     fullName: "",
     phone: "",
     email: "",
+    dateOfBirth: "",
     description: "",
     file: null,
     location: "",
     lat: "",
     long: "",
   });
-  const navigate = useNavigate();
-  const [descriptionRows, setDescriptionRows] = useState(2);
-  const [locationError, setLocationError] = useState("");
-  const [showToast, setShowToast] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
     if (name === "file") {
-      setFormData({ ...formData, [name]: files[0] });
+      setFormData((prev) => ({
+        ...prev,
+        file: files[0], // Properly store the file
+      }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
 
       if (name === "description") {
-        const lineCount = value.split("\n").length;
-        setDescriptionRows(lineCount + 1);
+        setDescriptionRows(value.split("\n").length + 1);
       }
     }
   };
+
   async function getLocationFromCoordinates(lat, lng) {
-    const baseUrl = "https://api.opencagedata.com/geocode/v1/json"; // Added const
-    const apiKey = "4a3c843eee9845cda6677dd115aedc33"; // Added const
-    const url = `${baseUrl}?q=${lat}+${lng}&key=${apiKey}&no_annotations=1`;
+    const apiKey = "4a3c843eee9845cda6677dd115aedc33";
+    const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lng}&key=${apiKey}&no_annotations=1`;
 
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch location data");
       const data = await response.json();
-
-      if (data.results && data.results.length > 0) {
-        return data.results[0];
-      }
-      return "Unknown location"; // Handle case where no results are found
+      return data.results?.[0]?.formatted || "Unknown location";
     } catch (error) {
       console.error("Error fetching location:", error);
-      return "Error fetching location"; // Handle API errors
+      return "Error fetching location";
     }
   }
 
-  const handleGetLocation = async () => {
+  const handleGetLocation = async (e) => {
+    e.preventDefault();
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-
-          setLocationError(""); // Clear previous errors
-
-          // Fetch and use location from coordinates
           const locationDescription = await getLocationFromCoordinates(
             latitude,
             longitude
@@ -76,16 +74,11 @@ const Report = () => {
             ...prev,
             lat: latitude,
             long: longitude,
+            location: locationDescription,
           }));
-          // Assuming setFormData and setLocationError are React state setters
-          setFormData((prev) => ({
-            ...prev,
-            location: `${locationDescription.formatted}`,
-          }));
+          setLocationError("");
         },
-        () => {
-          setLocationError("Unable to fetch location. Please try again.");
-        }
+        () => setLocationError("Unable to fetch location. Please try again.")
       );
     } else {
       setLocationError("Geolocation is not supported by your browser.");
@@ -97,7 +90,7 @@ const Report = () => {
     gsap.fromTo(
       ".toast",
       { x: 300, opacity: 0 },
-      { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }
+      { x: 0, opacity: 1, duration: 0.5 }
     );
 
     setTimeout(() => {
@@ -105,52 +98,56 @@ const Report = () => {
         x: 300,
         opacity: 0,
         duration: 0.5,
-        ease: "power3.in",
         onComplete: () => setShowToast(false),
       });
     }, 5000);
   };
 
-  const handleReport = async () => {
-    // console.log(formData);
+  const handleReport = async (e) => {
+    e.preventDefault();
     setMessage("");
-    if (formData.file) {
-      console.log("File attached:", formData.file.name);
-    }
-    console.log(formData);
+
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== null) {
+        formDataToSend.append(key, formData[key]);
+      }
+    });
+
     try {
       console.log(token);
       const response = await fetch("http://localhost:5000/issue/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" , Authorization: `Bearer ${token}`,
+        headers: {
+          Authorization: `Bearer ${token}`, // Only include auth header
         },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        setMessage("Account created successfully!");
-        window.location.href = "/expore";
+        setMessage("Report submitted successfully!");
+        navigate("/explore");
       } else {
-        setMessage(result?.message || "File upload failed");
+        setMessage(result?.message || "Report submission failed");
       }
     } catch (error) {
       setMessage("Error: " + error.message);
     }
 
-    // navigate("/explore");
-
     handleShowToast();
-    // navigate("/explore");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-pink-200 p-8 pt-24">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto relative">
-        {/* Toast Notification */}
+      <form
+        onSubmit={handleReport}
+        className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto relative"
+        encType="multipart/form-data"
+      >
         {showToast && (
-          <div className="toast fixed top-5 right-5 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50">
+          <div className="toast fixed top-5 right-5 bg-green-500 text-white p-4 rounded-lg">
             Report sent successfully!
           </div>
         )}
@@ -164,7 +161,6 @@ const Report = () => {
           </div>
         )}
 
-        {/* Report Type Dropdown */}
         <div className="mb-6">
           <label className="block text-gray-700 font-medium mb-2">
             Select Report Type
@@ -175,13 +171,18 @@ const Report = () => {
             onChange={handleChange}
             className="w-full border border-gray-300 p-3 rounded-lg"
           >
-            <option>Mahakumbh Seva</option>
-            <option>Prashadam ki rashi</option>
-            <option>Other Seva 2</option>
+            <option value="">Select Issue type</option>
+            <option>Emergency </option>
+            <option>Road and Infrastructure </option>
+            <option>Public Safety </option>
+            <option>Miscellaneous</option>
+            <option>Environmental Issues </option>
+            <option>Health and Sanitation </option>
+            <option>Community and Civic </option>
+            <option>Utility-Related Issues </option>
           </select>
         </div>
 
-        {/* Input Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <input
             type="text"
@@ -191,18 +192,15 @@ const Report = () => {
             onChange={handleChange}
             className="p-3 border border-gray-300 rounded-lg w-full"
           />
-          <div className="relative">
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              required
-              value={formData.phone}
-              onChange={handleChange}
-              className="p-3 border border-gray-300 rounded-lg w-full pl-12"
-            />
-            <span className="absolute left-3 top-3 text-gray-500">+91</span>
-          </div>
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Phone Number"
+            required
+            value={formData.phone}
+            onChange={handleChange}
+            className="p-3 border border-gray-300 rounded-lg w-full"
+          />
           <input
             type="email"
             name="email"
@@ -222,7 +220,6 @@ const Report = () => {
           />
         </div>
 
-        {/* Dynamic Description Field */}
         <div className="mb-6">
           <textarea
             name="description"
@@ -235,7 +232,6 @@ const Report = () => {
           />
         </div>
 
-        {/* File Upload */}
         <div className="mb-6">
           <label className="block text-gray-700 font-medium mb-2">
             Attach a File (Image of Problem)
@@ -243,12 +239,12 @@ const Report = () => {
           <input
             type="file"
             name="file"
+            accept="image/*"
             onChange={handleChange}
             className="p-2 border border-gray-300 rounded-lg w-full"
           />
         </div>
 
-        {/* Location Input */}
         <div className="mb-6">
           <label className="block text-gray-700 font-medium mb-2">
             Location (Optional)
@@ -258,21 +254,13 @@ const Report = () => {
               type="text"
               name="location"
               placeholder="Address"
-              onChange={handleChange}
               value={formData.location}
-              className="p-3 border border-gray-300 rounded-lg w-full mr-4"
-            />
-            <input
-              type="text"
-              name="address"
-              placeholder="Location"
-              readOnly
-              value={`${formData.lat},${formData.long}`}
+              onChange={handleChange}
               className="p-3 border border-gray-300 rounded-lg w-full mr-4"
             />
             <button
               onClick={handleGetLocation}
-              className="bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-700"
+              className="bg-blue-500 text-white px-4 py-3 rounded-lg"
             >
               Get Location
             </button>
@@ -282,20 +270,13 @@ const Report = () => {
           )}
         </div>
 
-        {/* Submit Button */}
-        <div className="flex justify-between items-center mt-8">
-          <p className="text-sm text-gray-600">
-            Thank you for submitting the report. It will be processed in the
-            shortest possible time.
-          </p>
-          <button
-            onClick={handleReport}
-            className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
-          >
-            Submit Report
-          </button>
-        </div>
-      </div>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+        >
+          Submit Report
+        </button>
+      </form>
     </div>
   );
 };

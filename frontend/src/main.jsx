@@ -16,6 +16,7 @@ import "./index.css";
 import Explore from "./components/Home/Explore.jsx";
 import Login from "./components/Login/Login.jsx";
 import SignUp from "./components/SignUp/SignUp.jsx";
+import FileUpload from "./components/Report/FileUpload.jsx";
 
 const App = () => {
   const [showHeaderFooter, setShowHeaderFooter] = useState(false);
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="form2" element={<Form2 />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<SignUp />} />
+        <Route path="fileupload" element={<FileUpload />} />
       </Route>
     )
   );

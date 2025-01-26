@@ -1,26 +1,20 @@
 import React, { useEffect, useState } from "react";
 
 const Explore = () => {
-  // const reports = [
-
-  // ];
   const [reports, setReports] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch("http://localhost:5000/explore");
         if (!response.ok) {
           const result = await response.json();
-          reports = [...result];
           console.log(result);
-          // console.error("Error response:", result[0].location);
         } else {
           const data = await response.json();
           const detailedData = await Promise.all(data.issue);
-          console.log("reprt", detailedData);
-          // Update state with detailed Pokémon data
+          console.log("Report Data:", detailedData);
           setReports(detailedData);
-          // console.log("Success response:", data.img);
         }
       } catch (error) {
         console.error("Fetch error:", error);
@@ -30,36 +24,39 @@ const Explore = () => {
     fetchData();
   }, []);
 
-  // console.log(data)
-
-  // Sample Data (Replace with API data if needed)
-
   return (
-    <div className="container mx-auto px-6 py-30">
-      <h2 className="text-2xl font-bold mb-6">Reported Issues Feed</h2>
+    <div className="container mx-auto px-6 py-20 h-screen">
+      <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+        Reported Issues Feed
+      </h2>
 
-      {/* Grid Layout */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {reports.map((reports,key) => (
+      {/* Responsive Grid Layout */}
+      <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+        {reports.map((report) => (
           <div
-            key={reports.id}
-            className="flex justify-between items-center bg-white p-5 rounded-xl shadow-md border"
+            key={report.id}
+            className="flex flex-col bg-gray-100 p-5 rounded-xl shadow-lg   hover:shadow-lg transition-shadow duration-300"
           >
-            <div>
-              <h3 className="font-semibold text-lg">
-                {reports.description}, {reports.status}
+            <div className="flex-1">
+              <h3 className="font-semibold text-lg text-gray-900">
+                {report.description}
               </h3>
-              <p className="text-gray-500">{reports.location}</p>
-              <p className="text-gray-400 text-sm">{reports.coordinates}</p>
-              <button className="mt-3 px-3 py-1 border rounded-md text-blue-600 hover:bg-blue-100">
+              <p className="text-gray-600 mt-1 font-medium">
+                Status: <span className="text-[#F14A00]">{report.status}</span>
+              </p>
+              <p className="text-gray-500 mt-2">{report.location}</p>
+              <p className="text-gray-400 text-sm">{report.coordinates}</p>
+            </div>
+            <div className="mt-4 flex justify-between items-center">
+              <button className="px-4 py-2 border rounded-md text-[#3B6790] hover:bg-[#3B6790]  hover:text-white transition-colors">
                 Support
               </button>
+              <img
+                src={`http://localhost:5000/${report.img}`}
+                alt="Report Image"
+                className="w-24 h-24 rounded-lg object-cover"
+              />
             </div>
-            <img
-              src={`http://localhost:5000/${reports.img}`}
-              alt={reports.img}
-              className="w-20 h-20 rounded-lg object-cover"
-            />
           </div>
         ))}
       </div>

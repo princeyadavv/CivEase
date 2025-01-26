@@ -25,7 +25,7 @@ const Header = () => {
   };
 
   return (
-    <div className="w-full bg-blue-400 text-white fixed z-50">
+    <div className="w-full bg-[#1F509A] text-white fixed z-50">
       <header className="py-4 px-6 md:px-10 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="text-xl font-bold">
@@ -42,7 +42,7 @@ const Header = () => {
           </Link>
           {isLoggedIn ? (
             <>
-              <Link to="/profile" className="hover:text-gray-200 transition">
+              <Link to="/fileupload" className="hover:text-gray-200 transition">
                 Profile
               </Link>
               <button
