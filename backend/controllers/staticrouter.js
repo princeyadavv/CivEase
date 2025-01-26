@@ -4,7 +4,7 @@ const{createToken} = require('../services/auth')
 
 
 async function handleSignup(req, res) {
-    const { firstName, lastName, email, password } = req.body
+    const { firstname, lastname, email, password } = req.body
     
     const isuser = await user.findOne({ email })
     if (isuser) {
@@ -15,7 +15,7 @@ async function handleSignup(req, res) {
         if (err) {
           return res.status(400).json({message:"error creating user"})
         } else {
-          user.create({ firstName, lastName, email, password: hash })
+          user.create({ firstname, lastname, email, password: hash })
         }
       });
     }
