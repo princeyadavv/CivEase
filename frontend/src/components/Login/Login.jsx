@@ -4,10 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { HiEye, HiEyeOff } from "react-icons/hi"; // Import icons from react-icons
 
 export default function Login() {
-  // for show and hide password
   const [showPassword, setShowPassword] = useState(false); // State to toggle visibility
 
-  // Function to toggle the password visibility
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
   };
@@ -21,11 +19,12 @@ export default function Login() {
 
   const handleLogin = async (data) => {
     setError("");
+    console.log("Login data submitted:", data);
   };
 
   return (
-    <div className="w-full h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+    <div className="min-h-screen bg-gradient-to-b from-blue-400 to-pink-200 p-6 flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Login
         </h2>
@@ -71,19 +70,20 @@ export default function Login() {
             >
               Password
             </label>
-            <div className="flex items-center">
+            <div className="relative">
               <input
-                type={showPassword ? "text" : "password"} // Change type based on state
+                type={showPassword ? "text" : "password"}
                 id="password"
                 placeholder="Enter your password"
                 {...register("password", { required: "Password is required" })}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className={`w-full px-4 py-2 border ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                } rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none`}
               />
-              {/* Eye Icon to toggle password visibility */}
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute right-4 text-gray-600"
+                className="absolute right-3 top-2.5 text-gray-600"
               >
                 {showPassword ? (
                   <HiEye className="h-5 w-5" />
@@ -92,6 +92,11 @@ export default function Login() {
                 )}
               </button>
             </div>
+            {errors.password && (
+              <span className="text-red-500 text-sm">
+                {errors.password.message}
+              </span>
+            )}
           </div>
 
           <button

@@ -1,5 +1,9 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const LandingPage = ({ onGetStarted }) => {
   const navigate = useNavigate();
@@ -9,28 +13,49 @@ const LandingPage = ({ onGetStarted }) => {
     navigate("/explore");
   };
 
+  const sectionsRef = useRef([]);
+
+  useEffect(() => {
+    sectionsRef.current.forEach((section) => {
+      gsap.fromTo(
+        section,
+        { opacity: 0, y: 90 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 90%",
+          },
+        }
+      );
+    });
+  }, []);
+
   return (
     <div className="font-sans bg-gray-50">
       {/* Hero Section */}
-      <section className="  text-white py-20 px-6 h-screen flex items-center">
+      <section className="text-white py-20 px-4 md:px-6 lg:px-8 h-screen flex items-center bg-gradient-to-b from-blue-400 to-pink-200">
         <div className="container mx-auto text-center">
-          <h1 className="text-5xl text-[#3B6790] md:text-6xl font-extrabold mb-6  ">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-6">
             Empowering Citizens. Building Better Communities.
           </h1>
-          <p className="text-lg md:text-xl mb-10 text-gray-500">
+          <p className="text-lg md:text-xl mb-8 text-gray-500">
             Report issues, provide feedback, and track resolutions—all in one
             place.
           </p>
-          <div className="flex justify-center space-x-4">
-            <a
-              href="#report"
-              className="bg-white text-blue-600 font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100"
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+            <Link
+              to="/report"
+              className="bg-white text-blue-600 font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 transition"
             >
               Report an Issue
-            </a>
+            </Link>
             <button
               onClick={handleGetStartedClick}
-              className="bg-blue-500 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700"
+              className="bg-blue-500 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transition"
             >
               Get Started
             </button>
@@ -39,10 +64,16 @@ const LandingPage = ({ onGetStarted }) => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-6 bg-gray-100">
+      <section
+        id="features"
+        ref={(el) => (sectionsRef.current[0] = el)}
+        className="py-20 px-4 md:px-6 lg:px-8 bg-gray-100"
+      >
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-12">Why Choose Our Platform?</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12">
+            Why Choose Our Platform?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 icon: "📱",
@@ -71,9 +102,9 @@ const LandingPage = ({ onGetStarted }) => {
             ].map((feature, index) => (
               <div
                 key={index}
-                className="bg-white p-8 rounded-lg shadow-lg-custom"
+                className="bg-white p-6 rounded-lg shadow-lg transition hover:shadow-xl"
               >
-                <div className="text-blue-600 mb-4 text-3xl">
+                <div className="text-blue-600 text-4xl mb-4">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
@@ -84,51 +115,68 @@ const LandingPage = ({ onGetStarted }) => {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-20 px-6 bg-white">
+      {/* Testimonials Section */}
+      <section
+        className="py-20 px-4 md:px-6 lg:px-8 bg-blue-50"
+        ref={(el) => (sectionsRef.current[1] = el)}
+      >
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-12">
-            Three Simple Steps to a Better Community
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-blue-600">
+            What People Are Saying
           </h2>
-          <div className="grid md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                step: "1️⃣",
-                title: "Report",
-                description:
-                  "Describe the issue, upload photos, and pinpoint the location on a map.",
+                feedback: "This platform is a game-changer for our community.",
+                name: "Aditi Sharma",
               },
               {
-                step: "2️⃣",
-                title: "Track",
-                description:
-                  "Receive updates and track the status of your report in real time.",
+                feedback:
+                  "I can finally report issues and see them resolved efficiently.",
+                name: "Rahul Verma",
               },
               {
-                step: "3️⃣",
-                title: "Resolve",
-                description:
-                  "Watch as city officials take action to resolve the issue efficiently.",
+                feedback: "Transparent and easy to use. Highly recommended!",
+                name: "Sneha Kapoor",
               },
-            ].map((step, index) => (
-              <div key={index} className="p-8">
-                <div className="text-blue-600 text-4xl mb-4">{step.step}</div>
-                <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
+            ].map((testimonial, index) => (
+              <div
+                key={index}
+                className="bg-white p-6 rounded-lg shadow-md text-left"
+              >
+                <p className="text-lg text-gray-700 italic">
+                  "{testimonial.feedback}"
+                </p>
+                <p className="mt-4 font-bold text-blue-600">
+                  — {testimonial.name}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="gradient-bg text-white py-20 px-6">
+      {/* Contact Section */}
+      <section
+        className="py-20 px-4 md:px-6 lg:px-8 bg-blue-100"
+        ref={(el) => (sectionsRef.current[2] = el)}
+      >
         <div className="container mx-auto text-center">
-          <button
-            onClick={handleGetStartedClick}
-            className="bg-white text-blue-600 font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100"
-          >
-            Get Started
+          <h2 className="text-3xl md:text-4xl font-bold mb-8">
+            Have Questions? Contact Us
+          </h2>
+          <p className="text-lg mb-6">
+            Reach out to us at{" "}
+            <a
+              href="mailto:support@civitas.com"
+              className="text-blue-600 font-bold hover:underline"
+            >
+              support@civitas.com
+            </a>{" "}
+            for more information or assistance.
+          </p>
+          <button className="bg-blue-500 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transition">
+            Get in Touch
           </button>
         </div>
       </section>

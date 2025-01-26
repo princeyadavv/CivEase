@@ -39,7 +39,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="w-full h-screen bg-gray-100 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-b from-blue-400 to-pink-200 p-8 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-half">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           SignUp

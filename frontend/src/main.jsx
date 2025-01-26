@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import Layout from "./Layout.jsx";
 // import Home from "./components/Home/Explore.jsx";
-import Form from "./components/Form/Fom.jsx";
+import Report from "./components/Report/Report.jsx";
 import Form2 from "./components/Form/Form2.jsx";
 import LandingPage from "./components/Home/LandingPage.jsx";
 import "./index.css";
@@ -31,7 +31,7 @@ const App = () => {
           element={<LandingPage onGetStarted={handleGetStarted} />}
         />
         <Route path="explore" element={<Explore />} />
-        <Route path="form" element={<Form />} />
+        <Route path="report" element={<Report />} />
         <Route path="form2" element={<Form2 />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<SignUp />} />
