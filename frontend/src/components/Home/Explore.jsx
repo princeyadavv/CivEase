@@ -42,8 +42,18 @@ const Explore = () => {
                 {report.description}
               </h3>
               <p className="text-gray-600 mt-1 font-medium">
-                Status: <span className="text-[#F14A00]">{report.status}</span>
+                Status:{" "}
+                <span
+                  className={
+                    report.status === "RESOLVED"
+                      ? "text-green-600"
+                      : "text-[#F14A00]"
+                  }
+                >
+                  {report.status}
+                </span>
               </p>
+
               <p className="text-gray-500 mt-2">{report.location}</p>
               <p className="text-gray-400 text-sm">{report.coordinates}</p>
             </div>
