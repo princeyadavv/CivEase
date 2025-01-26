@@ -8,7 +8,9 @@ function createToken(user){
         email: user.email,
         firstName: user.firstName,
         role: user.role,
-        bio: user.bio,
+        support:user.support,
+        issueRaised:user.issueRaised,
+        issueGiven:user.issueGiven
     }
     const token = jwt.sign(payload,secret)
     return token

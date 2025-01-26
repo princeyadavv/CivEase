@@ -2,20 +2,20 @@ const mongoose = require('mongoose')
 const issueSchema = mongoose.Schema({
 location:{
     type:String,
-    required:"true"
+    // required:"true"
 },
 coordinates:{
     type:String,
-    required:"true"
+    // required:"true"
 },
 img:{
     type:String,
-    required:true
+    // required:true
 
 },
 description:{
     type:String,
-    required:true
+    // required:true
 },
 status:{
     type:String,

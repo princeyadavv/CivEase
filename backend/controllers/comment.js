@@ -1,12 +1,10 @@
 const comments = require('../models/comment')
 const issues = require('../models/issue')
-const express = require('express')
-const { findByIdAndUpdate } = require('../models/user')
 
 async function handleCommentPost(req,res){
     const {content,issueId}=req.body
     try {
-        const comment = await Comment.findByIdAndUpdate(
+        const comment = await comments.findByIdAndUpdate(
             content,
             { issue: issueId }, 
             { new: true }
