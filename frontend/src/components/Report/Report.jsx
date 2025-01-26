@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
+import { useToken } from "../context/TokenContent"; // Import hooks
 
 const Report = () => {
   // const [address, setAddress] = useState("");
+  const { token } = useToken(); // Get the raw token and save function
+  
+  const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     type: "",
     fullName: "",
@@ -15,12 +19,10 @@ const Report = () => {
     lat: "",
     long: "",
   });
-
+  const navigate = useNavigate();
   const [descriptionRows, setDescriptionRows] = useState(2);
   const [locationError, setLocationError] = useState("");
   const [showToast, setShowToast] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -70,8 +72,6 @@ const Report = () => {
             longitude
           );
 
-          console.log(locationDescription);
-
           setFormData((prev) => ({
             ...prev,
             lat: latitude,
@@ -112,18 +112,41 @@ const Report = () => {
   };
 
   const handleReport = async () => {
-    console.log(formData);
-
+    // console.log(formData);
+    setMessage("");
     if (formData.file) {
       console.log("File attached:", formData.file.name);
     }
+    console.log(formData);
+    try {
+      console.log(token);
+      const response = await fetch("http://localhost:5000/issue/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" , Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setMessage("Account created successfully!");
+        window.location.href = "/expore";
+      } else {
+        setMessage(result?.message || "File upload failed");
+      }
+    } catch (error) {
+      setMessage("Error: " + error.message);
+    }
+
+    // navigate("/explore");
 
     handleShowToast();
     // navigate("/explore");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-400 to-pink-200 p-8">
+    <div className="min-h-screen bg-gradient-to-b from-blue-400 to-pink-200 p-8 pt-24">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto relative">
         {/* Toast Notification */}
         {showToast && (
@@ -135,6 +158,11 @@ const Report = () => {
         <h2 className="text-2xl font-bold text-gray-700 mb-6">
           Submit Your Report
         </h2>
+        {message && (
+          <div className="text-center text-red-600 font-medium text-sm mb-4">
+            {message}
+          </div>
+        )}
 
         {/* Report Type Dropdown */}
         <div className="mb-6">

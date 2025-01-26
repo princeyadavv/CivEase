@@ -30,10 +30,9 @@ export default function SignUp() {
 
       if (response.ok) {
         setMessage("Account created successfully!");
-        window.location.href = '/login'
+        window.location.href = "/login";
       } else {
         setMessage(result?.message || "File upload failed");
-        
       }
     } catch (error) {
       setMessage("Error: " + error.message);
@@ -47,13 +46,7 @@ export default function SignUp() {
           SignUp
         </h2>
         {message && (
-          <div
-            className={`text-center font-medium text-sm mb-4 ${
-              message.includes("Error") || message.includes("failed")
-                ? "text-red-600"
-                : "text-green-600"
-            }`}
-          >
+          <div className="text-center text-red-600 font-medium text-sm mb-4">
             {message}
           </div>
         )}

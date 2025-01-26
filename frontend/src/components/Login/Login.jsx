@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { HiEye, HiEyeOff } from "react-icons/hi"; // Import icons from react-icons
+import { useToken } from "../context/TokenContent"; // Adjust the path
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false); // State to toggle visibility
+  const [error, setError] = useState("");
+  const { saveToken } = useToken(); // Use the context
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
@@ -15,11 +19,9 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [error, setError] = useState("");
 
   const handleLogin = async (data) => {
     setError("");
-    console.log("Login data submitted:", data);
     try {
       const response = await fetch("http://localhost:5000/login", {
         method: "POST",
@@ -30,16 +32,15 @@ export default function Login() {
       const result = await response.json();
 
       if (response.ok) {
-        const token = result.token
-        console.log(token)
-       localStorage.setItem("bankai",token)
-       window.location.href = '/explore'
+        saveToken(result.token); // Save token using the context
+
+        console.log("Logged in successfully");
+        navigate("/explore");
       } else {
-        setMessage(result?.message || "File upload failed");
-        
+        setError(result.message || "Login failed");
       }
     } catch (error) {
-      setMessage("Error: " + error.message);
+      setError("Error: " + error.message);
     }
   };
 

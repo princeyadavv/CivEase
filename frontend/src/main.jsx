@@ -6,8 +6,9 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
+
+import { TokenProvider } from "./components/context/TokenContent.jsx"; // Import TokenProvider
 import Layout from "./Layout.jsx";
-// import Home from "./components/Home/Explore.jsx";
 import Report from "./components/Report/Report.jsx";
 import Form2 from "./components/Form/Form2.jsx";
 import LandingPage from "./components/Home/LandingPage.jsx";
@@ -39,7 +40,13 @@ const App = () => {
     )
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <TokenProvider>
+      {" "}
+      {/* Wrap the entire app with TokenProvider */}
+      <RouterProvider router={router} />
+    </TokenProvider>
+  );
 };
 
 ReactDOM.createRoot(document.getElementById("root")).render(

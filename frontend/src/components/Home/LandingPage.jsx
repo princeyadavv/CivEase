@@ -2,14 +2,20 @@ import React, { useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useToken, useDecodedToken } from "../context/TokenContent"; // Import hooks
 
 gsap.registerPlugin(ScrollTrigger);
 
 const LandingPage = ({ onGetStarted }) => {
+  const { token, saveToken } = useToken(); // Get the raw token and save function
+  const decodedToken = useDecodedToken(); // Get decoded token data
+  console.log(decodedToken);
+
   const navigate = useNavigate();
 
   const handleGetStartedClick = () => {
     onGetStarted();
+
     navigate("/explore");
   };
 
